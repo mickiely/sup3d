@@ -114,13 +114,25 @@ dt{color:var(--muted);padding-right:12px} dd{margin:0;text-align:right;font-weig
   .card{left:max(16px,env(safe-area-inset-left,0px))!important;right:max(16px,env(safe-area-inset-right,0px));top:auto!important;bottom:72px;width:auto;max-height:50%}
   #tip{display:none}
 }
-/* Compact floating map HUD */
-.mapnav{position:absolute;z-index:6;right:clamp(12px,2vw,28px);bottom:76px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px;background:rgba(24,31,34,.86);border:1px solid #ffffff30;border-radius:18px;box-shadow:0 12px 32px #0004;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.mapnav button{border:0;background:#ffffff20;color:white;border-radius:10px;width:43px;height:43px;font:700 19px system-ui;cursor:pointer;touch-action:manipulation;transition:background .15s,transform .15s}
-.mapnav button:hover{background:#ffffff40;transform:scale(1.05)}.mapnav button:active{transform:scale(.94)}.mapnav button:focus-visible{outline:3px solid #6fd5ff;outline-offset:2px}
-.mapnav .hudline{height:1px;background:#ffffff35;width:34px;margin:3px 0}.mapnav .hudlabel{font:600 9px system-ui;color:#ffffffb8;letter-spacing:.07em;text-transform:uppercase}
-.mapnav .hudgrid{display:grid;grid-template-columns:repeat(3,35px);gap:3px}.mapnav .hudgrid button{width:35px;height:35px;font-size:16px}.mapnav .hudgrid .empty{pointer-events:none}
-@media(max-width:760px){.mapnav{right:10px;bottom:74px;padding:6px;gap:3px}.mapnav button{width:38px;height:38px}.mapnav .hudgrid{grid-template-columns:repeat(3,30px)}.mapnav .hudgrid button{width:30px;height:30px}}
+/* Responsive map navigation: 44px touch targets and safe-area spacing. */
+*{box-sizing:border-box}
+body{margin:0}.app{height:100%;height:100dvh}
+.mapnav{position:absolute;z-index:5;right:max(16px,env(safe-area-inset-right));bottom:80px;display:grid;gap:8px;padding:10px;background:rgba(24,31,34,.94);color:#fff;border:1px solid #ffffff30;border-radius:20px;box-shadow:0 12px 32px #0004;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hudheading{display:flex;align-items:center;justify-content:space-between;gap:8px}.hudlabel{font:600 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:#d2dddf}.hudrow{display:flex;gap:4px;justify-content:center}
+.mapnav button{border:1px solid transparent;background:#ffffff16;color:#fff;border-radius:11px;min-width:44px;height:44px;font:600 21px system-ui;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.mapnav button:hover{background:#ffffff30}.mapnav button:active{background:#ffffff48}.mapnav button:focus-visible{outline:3px solid #6fd5ff;outline-offset:2px}
+.mapnav .hudhelp{min-width:44px;height:44px;font-size:15px}.hudgrid{display:grid;grid-template-columns:repeat(3,44px);gap:4px}.hudgrid #mapReset{background:#d9573f;font-size:23px}
+.hudzoom{display:flex;align-items:center;justify-content:space-between;gap:4px}.hudzoom output{font:600 11px var(--mono);min-width:44px;text-align:center}
+.hudtips{position:absolute;right:calc(100% + 12px);bottom:0;width:245px;padding:14px;border-radius:14px;background:#182024;color:#edf3f4;box-shadow:0 12px 32px #0004;font:400 13px/1.6 var(--sans)}.hudtips p{margin:0 0 8px}.hudtips p:last-child{margin:0}.hudtips strong{color:#fff}
+.filters{bottom:max(16px,env(safe-area-inset-bottom))}.jobs{max-height:calc(100% - 430px)}
+@media(max-width:760px){
+ .mapnav{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(72px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;border-radius:18px}
+ .hudheading{flex-direction:column;gap:0}.hudheading .hudlabel{display:none}.hudgrid{grid-template-columns:repeat(3,44px)}.hudzoom{flex-direction:column}.hudzoom output{display:none}.hudrow{flex-direction:column}.hudtips{right:0;bottom:calc(100% + 10px);width:min(280px,100%)}
+ .card{bottom:calc(240px + env(safe-area-inset-bottom));max-height:calc(100% - 260px)}.jobs.open{bottom:calc(240px + env(safe-area-inset-bottom));max-height:50%}.jobsBtn{bottom:calc(240px + env(safe-area-inset-bottom))}
+ .summary{max-height:calc(100% - 300px)}
+}
+@media(max-width:360px){.mapnav{gap:2px;padding:4px}.hudgrid{gap:2px}}
+@media(max-height:540px) and (min-width:761px){.mapnav{display:flex;align-items:center}.hudzoom,.hudrow{flex-direction:column}.hudheading .hudlabel{display:none}.jobs{max-height:calc(100% - 280px)}}
 </style>
 
 </head><body>
@@ -130,18 +142,26 @@ dt{color:var(--muted);padding-right:12px} dd{margin:0;text-align:right;font-weig
   <div class="loading" id="loading">Loading park map…</div>
   <div id="tip" hidden></div>
   <nav class="mapnav" aria-label="3D map navigation">
-    <span class="hudlabel">MAP</span>
-    <button id="mapZoomIn" type="button" title="Zoom in" aria-label="Zoom in">+</button>
-    <button id="mapZoomOut" type="button" title="Zoom out" aria-label="Zoom out">−</button>
-    <div class="hudline"></div>
-    <div class="hudgrid" aria-label="Pan map">
-      <span class="empty"></span><button id="mapUp" type="button" title="Pan forward" aria-label="Pan forward">↑</button><span class="empty"></span>
-      <button id="mapLeft" type="button" title="Pan left" aria-label="Pan left">←</button><button id="mapReset" type="button" title="Reset view" aria-label="Reset view">⌂</button><button id="mapRight" type="button" title="Pan right" aria-label="Pan right">→</button>
-      <span class="empty"></span><button id="mapDown" type="button" title="Pan backward" aria-label="Pan backward">↓</button><span class="empty"></span>
+    <div class="hudheading"><span class="hudlabel">Explore</span><button id="mapHelp" class="hudhelp" type="button" aria-label="Navigation help" aria-expanded="false" aria-controls="mapTips" title="Navigation help">?</button></div>
+    <div class="hudzoom" role="group" aria-label="Zoom">
+      <button id="mapZoomIn" type="button" title="Zoom in (+)" aria-label="Zoom in">+</button>
+      <output id="mapZoom" aria-label="Map zoom">100%</output>
+      <button id="mapZoomOut" type="button" title="Zoom out (−)" aria-label="Zoom out">−</button>
     </div>
-    <div class="hudline"></div>
-    <button id="mapRotateLeft" type="button" title="Rotate left" aria-label="Rotate left">↶</button>
-    <button id="mapRotateRight" type="button" title="Rotate right" aria-label="Rotate right">↷</button>
+    <div class="hudgrid" role="group" aria-label="Pan map">
+      <span></span><button id="mapUp" type="button" title="Pan forward (↑)" aria-label="Pan forward">↑</button><span></span>
+      <button id="mapLeft" type="button" title="Pan left (←)" aria-label="Pan left">←</button><button id="mapReset" type="button" title="Reset view (Home)" aria-label="Reset view">⌂</button><button id="mapRight" type="button" title="Pan right (→)" aria-label="Pan right">→</button>
+      <span></span><button id="mapDown" type="button" title="Pan backward (↓)" aria-label="Pan backward">↓</button><span></span>
+    </div>
+    <div class="hudrow" role="group" aria-label="Rotate map">
+      <button id="mapRotateLeft" type="button" title="Rotate left (Q)" aria-label="Rotate left">↶</button>
+      <button id="mapRotateRight" type="button" title="Rotate right (E)" aria-label="Rotate right">↷</button>
+    </div>
+    <div id="mapTips" class="hudtips" hidden>
+      <p><strong>Touch</strong><br>Drag to rotate. Use two fingers to pan or pinch to zoom.</p>
+      <p><strong>Mouse / trackpad</strong><br>Drag to rotate. Right-drag to pan. Scroll to zoom.</p>
+      <p><strong>Keyboard</strong><br>Arrow keys to pan · + / − to zoom<br>Q / E to rotate · Home to reset</p>
+    </div>
   </nav>
   <div class="toast" id="toast" hidden role="status"></div>
 
@@ -535,13 +555,13 @@ addEventListener('resize',resize);
 function frame(t,instant){ resize(); goal={t,z:1,reset:true}; if(instant||reduce){ applyGoal(1); goal=null; } }
 function applyGoal(k){ if(goal.reset){ camera.position.lerp(goal.t.clone().add(ISO),k); controls.target.lerp(goal.t,k); }
   else { const off=camera.position.clone().sub(controls.target); controls.target.lerp(goal.t,k); camera.position.copy(controls.target).add(off); }
-  camera.zoom+=(goal.z-camera.zoom)*k; camera.updateProjectionMatrix(); }
+  camera.zoom+=(goal.z-camera.zoom)*k; camera.updateProjectionMatrix(); updateMapZoom(); }
 controls.addEventListener('start',()=>{ goal=null; });
 // Explicit map controls also work on trackpads and touch devices.
 controls.enableZoom=true; controls.enablePan=true; controls.enableRotate=true;
 controls.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};
 controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
-function navZoom(mult){goal=null;camera.zoom=Math.max(controls.minZoom,Math.min(controls.maxZoom,camera.zoom*mult));camera.updateProjectionMatrix();}
+function navZoom(mult){goal=null;camera.zoom=Math.max(controls.minZoom,Math.min(controls.maxZoom,camera.zoom*mult));camera.updateProjectionMatrix();updateMapZoom();}
 function navPan(dx,dz){goal=null;const step=view/(camera.zoom*12);const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();const right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();const move=right.multiplyScalar(dx*step).add(dir.multiplyScalar(dz*step));camera.position.add(move);controls.target.add(move);}
 $('mapZoomIn').addEventListener('click',()=>navZoom(1.3));
 $('mapZoomOut').addEventListener('click',()=>navZoom(1/1.3));
@@ -552,7 +572,17 @@ $('mapDown').addEventListener('click',()=>navPan(0,-1));
 function navRotate(angle){goal=null;const off=camera.position.clone().sub(controls.target);off.applyAxisAngle(new THREE.Vector3(0,1,0),angle);camera.position.copy(controls.target).add(off);controls.update();}
 $('mapRotateLeft').addEventListener('click',()=>navRotate(-Math.PI/12));
 $('mapRotateRight').addEventListener('click',()=>navRotate(Math.PI/12));
-$('mapReset').addEventListener('click',()=>{closeCard();frame(new THREE.Vector3(stage.clientWidth>1100?-view*.06:0,0,0),true);});
+function resetMap(){closeCard();frame(new THREE.Vector3(stage.clientWidth>1100?-view*.06:0,0,0),true);controls.update();}
+$('mapReset').addEventListener('click',resetMap);
+$('mapHelp').addEventListener('click',()=>{const open=$('mapTips').hidden;$('mapTips').hidden=!open;$('mapHelp').setAttribute('aria-expanded',String(open));});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){$('mapTips').hidden=true;$('mapHelp').setAttribute('aria-expanded','false');return;}
+  if(e.ctrlKey||e.metaKey||e.altKey||e.target.closest('input,select,textarea,button,a,[contenteditable="true"]'))return;
+  const actions={ArrowLeft:()=>navPan(-1,0),ArrowRight:()=>navPan(1,0),ArrowUp:()=>navPan(0,1),ArrowDown:()=>navPan(0,-1),'+':()=>navZoom(1.15),'=':()=>navZoom(1.15),'-':()=>navZoom(1/1.15),q:()=>navRotate(-Math.PI/12),e:()=>navRotate(Math.PI/12),Home:resetMap};
+  const action=actions[e.key]||actions[e.key.toLowerCase()];if(action){e.preventDefault();action();}
+});
+function updateMapZoom(){$('mapZoom').value=Math.round(camera.zoom*100)+'%';}
+controls.addEventListener('change',updateMapZoom);
 
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
 function pick(e){ const rc=renderer.domElement.getBoundingClientRect(); ptr.set((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1); ray.setFromCamera(ptr,camera);
