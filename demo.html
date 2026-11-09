@@ -158,8 +158,8 @@ body{margin:0}.app{height:100%;height:100dvh}
       <button id="mapRotateRight" type="button" title="Rotate right (E)" aria-label="Rotate right">↷</button>
     </div>
     <div id="mapTips" class="hudtips" hidden>
-      <p><strong>Touch</strong><br>Drag to rotate. Use two fingers to pan or pinch to zoom.</p>
-      <p><strong>Mouse / trackpad</strong><br>Drag to rotate. Right-drag to pan. Scroll to zoom.</p>
+      <p><strong>Touch</strong><br>Drag to pan. Use two fingers to rotate or pinch to zoom.</p>
+      <p><strong>Mouse / trackpad</strong><br>Drag to pan. Right-drag to rotate. Scroll to zoom.</p>
       <p><strong>Keyboard</strong><br>Arrow keys to pan · + / − to zoom<br>Q / E to rotate · Home to reset</p>
     </div>
   </nav>
@@ -562,8 +562,9 @@ function applyGoal(k){ if(goal.reset){ camera.position.lerp(goal.t.clone().add(I
 controls.addEventListener('start',()=>{ goal=null; });
 // Explicit map controls also work on trackpads and touch devices.
 controls.enableZoom=true; controls.enablePan=true; controls.enableRotate=true;
-controls.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};
-controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+controls.screenSpacePanning=false; controls.zoomSpeed=2.2; controls.panSpeed=1; controls.rotateSpeed=.7;
+controls.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};
+controls.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
 function navZoom(mult){goal=null;camera.zoom=Math.max(controls.minZoom,Math.min(controls.maxZoom,camera.zoom*mult));camera.updateProjectionMatrix();updateMapZoom();}
 function navPan(dx,dz){goal=null;const step=view/(camera.zoom*12);const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();const right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();const move=right.multiplyScalar(dx*step).add(dir.multiplyScalar(dz*step));camera.position.add(move);controls.target.add(move);}
 $('mapZoomIn').addEventListener('click',()=>navZoom(1.3));
@@ -575,7 +576,7 @@ $('mapDown').addEventListener('click',()=>navPan(0,-1));
 function navRotate(angle){goal=null;const off=camera.position.clone().sub(controls.target);off.applyAxisAngle(new THREE.Vector3(0,1,0),angle);camera.position.copy(controls.target).add(off);controls.update();}
 $('mapRotateLeft').addEventListener('click',()=>navRotate(-Math.PI/12));
 $('mapRotateRight').addEventListener('click',()=>navRotate(Math.PI/12));
-function resetMap(){closeCard();if(HOME)frame(HOME.clone(),true);controls.update();}
+function resetMap(){closeCard();if(!HOME)return;const damping=controls.enableDamping;controls.enableDamping=false;controls.update();frame(HOME.clone(),true);controls.update();controls.enableDamping=damping;}
 $('mapReset').addEventListener('click',resetMap);
 $('mapHelp').addEventListener('click',()=>{const open=$('mapTips').hidden;$('mapTips').hidden=!open;$('mapHelp').setAttribute('aria-expanded',String(open));});
 document.addEventListener('keydown',e=>{

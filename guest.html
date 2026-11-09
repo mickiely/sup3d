@@ -381,6 +381,7 @@ renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 stage.appendChild(renderer.domElement);
 const controls=new THREE.OrbitControls(camera,renderer.domElement);
 controls.enableDamping=true; controls.dampingFactor=.08; controls.maxPolarAngle=Math.PI*.42; controls.minPolarAngle=.12; controls.minZoom=.7; controls.maxZoom=9;
+controls.enableZoom=true; controls.enablePan=true; controls.enableRotate=true;
 // map-style controls: drag moves the map, right-drag or two fingers rotate, scroll or pinch zooms
 controls.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};
 controls.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
@@ -681,7 +682,7 @@ function zoomBy(f){ goal=null; camera.zoom=Math.max(controls.minZoom,Math.min(co
 function rotateBy(deg){ goal=null; const off=camera.position.clone().sub(controls.target); off.applyAxisAngle(new THREE.Vector3(0,1,0),deg*Math.PI/180); camera.position.copy(controls.target).add(off); controls.update(); }
 function panBy(dx,dz){ goal=null; const f=new THREE.Vector3(); camera.getWorldDirection(f); f.y=0; f.normalize(); const r=new THREE.Vector3(f.z,0,-f.x).negate();
   const step=view/camera.zoom*.18; const m=r.multiplyScalar(dx*step).add(f.multiplyScalar(dz*step)); controls.target.add(m); camera.position.add(m); controls.update(); }
-function resetView(){ closeCard(); if(HOME) frame(HOME.clone(),false); }
+function resetView(){ closeCard(); if(!HOME) return; const damping=controls.enableDamping; controls.enableDamping=false; controls.update(); frame(HOME.clone(),true); controls.update(); controls.enableDamping=damping; }
 document.getElementById('navctl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
   ({zin:()=>zoomBy(1.35),zout:()=>zoomBy(1/1.35),rl:()=>rotateBy(-30),rr:()=>rotateBy(30),home:resetView,up:()=>panBy(0,1),down:()=>panBy(0,-1),left:()=>panBy(-1,0),right:()=>panBy(1,0)})[b.dataset.a]?.(); });
 stage.addEventListener('keydown',e=>{ const k={ArrowUp:()=>panBy(0,1),ArrowDown:()=>panBy(0,-1),ArrowLeft:()=>panBy(-1,0),ArrowRight:()=>panBy(1,0),'+':()=>zoomBy(1.35),'=':()=>zoomBy(1.35),'-':()=>zoomBy(1/1.35),q:()=>rotateBy(-30),e:()=>rotateBy(30)}[e.key]; if(k){ e.preventDefault(); k(); } });
