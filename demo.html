@@ -138,7 +138,7 @@ body{margin:0}.app{height:100%;height:100dvh}
 </head><body>
 <a class="backlink" href="index.html">← Sup3d</a>
 <div class="app">
-  <div id="stage" aria-label="3D model of the holiday park"></div>
+  <div id="stage" tabindex="0" aria-label="3D model of the holiday park. Use arrow keys to move, plus and minus to zoom, Q and E to rotate."></div>
   <div class="loading" id="loading">Loading park map…</div>
   <div id="tip" hidden></div>
   <nav class="mapnav" aria-label="3D map navigation">
@@ -267,7 +267,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 stage.appendChild(renderer.domElement);
 const controls=new THREE.OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true; controls.dampingFactor=.08; controls.maxPolarAngle=Math.PI*.42; controls.minZoom=.7; controls.maxZoom=7;
+controls.enableDamping=true; controls.dampingFactor=.08; controls.maxPolarAngle=Math.PI*.42; controls.minPolarAngle=.12; controls.minZoom=.7; controls.maxZoom=9;
 scene.add(new THREE.HemisphereLight(0xffffff,0xb8c2ae,.62));
 const sun=new THREE.DirectionalLight(0xffffff,.5); sun.position.set(-14,30,12); sun.castShadow=true;
 sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-26,right:26,top:26,bottom:-26}); sun.shadow.bias=-.0008;
@@ -361,7 +361,7 @@ function buildPark(p){
       world.add(g); objs.push(g); items.push(it);
     });
     Object.assign(sun.shadow.camera,{left:-W*.6,right:W*.6,top:D*.6,bottom:-D*.6}); sun.shadow.camera.updateProjectionMatrix();
-    view=Math.max(W,D)*.95; frame(new THREE.Vector3(stage.clientWidth>1100?-W*.06:0,0,0),true);
+    view=Math.max(W,D)*.95; BOUND=Math.max(W,D)*.6; HOME=new THREE.Vector3(stage.clientWidth>1100?-W*.06:0,0,0); frame(HOME.clone(),true);
     buildJobs(); refresh();
   };
   if(IMG[p.id]) go(IMG[p.id]);
@@ -437,7 +437,7 @@ function renderSummary(){
   if(mode==='guest'){ const rent=items.filter(i=>i.st!=='owner'), free=rent.filter(i=>i.st==='vacant'||i.st==='departing');
     const pct=Math.round(free.length/Math.max(1,rent.length)*100); const L=2*Math.PI*26;
     $('occArc').setAttribute('stroke-dasharray',`${L*pct/100} ${L}`); $('occPct').textContent=free.length;
-    $('occLine').textContent=`${free.length} sites and cabins free tonight`;
+    $('occLine').textContent=`${free.length} sites and cabins available tonight`;
     $('occSub').textContent=`Cabins & villas ${free.filter(i=>i.t.kind==='cabin').length} · Sites ${free.filter(i=>i.t.kind==='site').length}`;
     $('guestNote').textContent='Tap any glowing site to see what it is, the nightly rate and where it sits in the park, then pick it as your spot. Your booking goes straight to the park.';
     return; }
@@ -456,7 +456,7 @@ function renderSummary(){
 }
 const FILTERS=[['all','Whole park',()=>true],['attn','Needs attention',needs],['arriving','Arriving',i=>i.st==='arriving'],['departing','Leaving',i=>i.st==='departing'],
   ['vacant','Vacant',i=>i.st==='vacant'],['owners','Owner & resident sites',i=>i.st==='owner'],['owe','Owing',i=>i.st==='owner'&&!!i.owe]];
-const GFILTERS=[['all','Whole park',()=>true],['free','Free tonight',i=>i.st==='vacant'||i.st==='departing'],['cabins','Cabins & villas',i=>i.t.kind==='cabin'&&(i.st==='vacant'||i.st==='departing')],['sites','Sites',i=>i.t.kind==='site'&&(i.st==='vacant'||i.st==='departing')]];
+const GFILTERS=[['all','Whole park',()=>true],['free','Available tonight',i=>i.st==='vacant'||i.st==='departing'],['cabins','Cabins & villas',i=>i.t.kind==='cabin'&&(i.st==='vacant'||i.st==='departing')],['sites','Sites',i=>i.t.kind==='site'&&(i.st==='vacant'||i.st==='departing')]];
 const curF=()=>mode==='guest'?GFILTERS:FILTERS;
 function renderFilters(){
   $('filters').replaceChildren(...curF().filter(([k,l,fn])=>k==='all'||items.some(fn)).map(([k,l,fn])=>{ const b=el('button',{type:'button',className:'chip'},l); b.setAttribute('aria-pressed',filter===k);
@@ -492,12 +492,12 @@ function showCard(i){
     const free=it.st==='vacant'||it.st==='departing';
     if(it.st==='owner'){ body.push(el('div',{className:'pills'},el('span',{className:'pill',textContent:'Private holiday van',style:'background:#6f747a'})),el('div',{className:'note',textContent:'This is a privately owned annual site and can\'t be booked.'})); }
     else {
-      body.push(el('div',{className:'pills'},el('span',{className:'pill',textContent:free?'Free tonight':'Booked tonight',style:`background:${free?cssv('--occ'):'#9a968c'}`})));
+      body.push(el('div',{className:'pills'},el('span',{className:'pill',textContent:free?'Available tonight':'Booked tonight',style:`background:${free?cssv('--occ'):'#9a968c'}`})));
       body.push(el('div',{},el('div',{className:'big',textContent:`From ${aud(it.t.rate*mult())} a night`}),el('div',{className:'sub',textContent:it.t.label})));
       if(free){ const b=el('button',{type:'button',className:'btn dark',textContent:'Choose this site'});
         b.addEventListener('click',()=>{ it.st='arriving'; it.guest='You'; it.pax=2; it.arr='Today 2pm'; it.dep='Sun 1'; it.src='Picked on the 3D map'; refresh(); showCard(i); toast(`${nameOf(it)} is held for you · continue to the park's booking page`); });
         body.push(b,el('div',{className:'note',textContent:'Next step goes to the park\'s own booking page with this site already selected, so payment and your details stay with the park.'})); }
-      else body.push(el('div',{className:'note',textContent:'Try "Free tonight" at the bottom to see what\'s open.'}));
+      else body.push(el('div',{className:'note',textContent:'Tap "Available tonight" at the bottom to see which sites you can still book.'}));
     }
     $('cBody').replaceChildren(...body); return;
   }
@@ -549,6 +549,9 @@ function placeCard(){
    ============================================================ */
 const ISO=new THREE.Vector3(.45,1.35,1).normalize().multiplyScalar(140);
 let view=40, goal=null;
+let HOME=null, BOUND=20;
+controls.addEventListener('change',()=>{ const t=controls.target; const cx=Math.max(-BOUND,Math.min(BOUND,t.x)), cz=Math.max(-BOUND,Math.min(BOUND,t.z));
+  if(cx!==t.x||cz!==t.z||t.y!==0){ const dx=cx-t.x, dz=cz-t.z, dy=-t.y; t.set(cx,0,cz); camera.position.x+=dx; camera.position.z+=dz; camera.position.y+=dy; } });
 function resize(){ const w=stage.clientWidth,h=stage.clientHeight,a=w/h, v=a<1?view/a*.7:view;
   Object.assign(camera,{left:-v*a/2,right:v*a/2,top:v/2,bottom:-v/2}); camera.updateProjectionMatrix(); renderer.setSize(w,h); }
 addEventListener('resize',resize);
@@ -572,7 +575,7 @@ $('mapDown').addEventListener('click',()=>navPan(0,-1));
 function navRotate(angle){goal=null;const off=camera.position.clone().sub(controls.target);off.applyAxisAngle(new THREE.Vector3(0,1,0),angle);camera.position.copy(controls.target).add(off);controls.update();}
 $('mapRotateLeft').addEventListener('click',()=>navRotate(-Math.PI/12));
 $('mapRotateRight').addEventListener('click',()=>navRotate(Math.PI/12));
-function resetMap(){closeCard();frame(new THREE.Vector3(stage.clientWidth>1100?-view*.06:0,0,0),true);controls.update();}
+function resetMap(){closeCard();if(HOME)frame(HOME.clone(),true);controls.update();}
 $('mapReset').addEventListener('click',resetMap);
 $('mapHelp').addEventListener('click',()=>{const open=$('mapTips').hidden;$('mapTips').hidden=!open;$('mapHelp').setAttribute('aria-expanded',String(open));});
 document.addEventListener('keydown',e=>{
@@ -592,7 +595,7 @@ renderer.domElement.addEventListener('pointerdown',e=>{ down={x:e.clientX,y:e.cl
 renderer.domElement.addEventListener('pointerup',e=>{ if(!down) return; const m=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null; if(m>6) return; const i=pick(e); i!=null?select(i,true):closeCard(); });
 renderer.domElement.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse'||down) return; const i=pick(e); renderer.domElement.classList.toggle('hover',i!=null);
   const tip=$('tip'); if(i==null||i===sel){ tip.hidden=true; return; } const it=items[i];
-  tip.textContent=mode==='guest'?`${nameOf(it)} · ${it.st==='owner'?'Private holiday van':(it.st==='vacant'||it.st==='departing')?'Free tonight':'Booked'}`:`${nameOf(it)} · ${it.st==='owner'?it.owner:STATUS[it.st][0]}`; const rc=stage.getBoundingClientRect(); tip.style.left=(e.clientX-rc.left)+'px'; tip.style.top=(e.clientY-rc.top)+'px'; tip.hidden=false; });
+  tip.textContent=mode==='guest'?`${nameOf(it)} · ${it.st==='owner'?'Private holiday van':(it.st==='vacant'||it.st==='departing')?'Available tonight':'Booked'}`:`${nameOf(it)} · ${it.st==='owner'?it.owner:STATUS[it.st][0]}`; const rc=stage.getBoundingClientRect(); tip.style.left=(e.clientX-rc.left)+'px'; tip.style.top=(e.clientY-rc.top)+'px'; tip.hidden=false; });
 renderer.domElement.addEventListener('pointerleave',()=>{$('tip').hidden=true;});
 const t0=performance.now();
 (function tick(){ requestAnimationFrame(tick); const t=(performance.now()-t0)/1000;
