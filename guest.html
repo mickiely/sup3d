@@ -180,7 +180,7 @@ body.locked .summary h1,body.locked .summary .place,body.locked .summary .foot,b
 </style>
 </head>
 <body>
-<div class="concept"><div class="wrap"><span><b>Sup3d</b> concept · not the official Easts Beach website · sample availability and prices</span><a href="index.html">About Sup3d →</a></div></div>
+<div class="concept"><div class="wrap"><span><b>Sup3d</b> concept · not the official Easts Beach website · sample availability and prices</span><a href="/">About Sup3d →</a></div></div>
 <header class="top"><div class="wrap">
   <div><h1>Easts Beach, Kiama</h1><p>Find your spot before you book. Spin the park, see what's free tonight, and pick the exact cabin or site you want, right on the water.</p></div>
   <nav aria-label="Sections"><a href="#map">Park map</a><a href="#facilities">Facilities</a><a href="#nearby">Around Kiama</a><a href="#planner">Plan our day</a></nav>
@@ -288,7 +288,7 @@ body.locked .summary h1,body.locked .summary .place,body.locked .summary .foot,b
   </div>
 </div></section>
 
-<footer class="g"><div class="wrap"><span>A Sup3d concept built from the park's own site map. Availability, prices and events are sample data.</span><a href="demo.html#eastsbeach">See the staff side of this park →</a></div></footer>
+<footer class="g"><div class="wrap"><span>A Sup3d concept built from the park's own site map. Availability, prices and events are sample data.</span><a href="/demo#eastsbeach">See the staff side of this park →</a></div></footer>
 
 <script>window.SUP3D_GUEST=true;</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -635,6 +635,10 @@ function applyGoal(k){ if(goal.reset){ camera.position.lerp(goal.t.clone().add(I
   else { const off=camera.position.clone().sub(controls.target); controls.target.lerp(goal.t,k); camera.position.copy(controls.target).add(off); }
   camera.zoom+=(goal.z-camera.zoom)*k; camera.updateProjectionMatrix(); }
 controls.addEventListener('start',()=>{ goal=null; });
+ // Guest navigation: drag to pan, right-drag to rotate, pinch to zoom/rotate.
+ controls.enablePan=true; controls.enableRotate=true; controls.enableZoom=true;
+ controls.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};
+ controls.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
 function pick(e){ const rc=renderer.domElement.getBoundingClientRect(); ptr.set((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1); ray.setFromCamera(ptr,camera);
   for(const h of ray.intersectObjects(objs,true)){ if(h.object.isSprite) continue; let o=h.object; while(o&&o.userData.i===undefined) o=o.parent; if(o) return o.userData.i; } return null; }
