@@ -225,7 +225,7 @@ body.otherpark #facilities,body.otherpark #nearby,body.otherpark #planner,body.o
     <div class="pad"><button type="button" data-a="up" aria-label="Move map up" title="Move up">▲</button><button type="button" data-a="left" aria-label="Move map left" title="Move left">◀</button><button type="button" data-a="home" aria-label="Reset view" title="Reset view">⌂</button><button type="button" data-a="right" aria-label="Move map right" title="Move right">▶</button><button type="button" data-a="down" aria-label="Move map down" title="Move down">▼</button></div>
     <div class="col"><button type="button" data-a="zin" aria-label="Zoom in" title="Zoom in">+</button><button type="button" data-a="zout" aria-label="Zoom out" title="Zoom out">−</button></div>
     <div class="col"><button type="button" data-a="rl" aria-label="Rotate left" title="Rotate left">↺</button><button type="button" data-a="rr" aria-label="Rotate right" title="Rotate right">↻</button></div>
-    <div class="hint">Drag to rotate · right-drag to pan · scroll to zoom</div>
+    <div class="hint">Drag to move · right-drag to rotate · scroll to zoom</div>
   </div>
   <div class="toast" id="toast" hidden role="status"></div>
 
@@ -716,7 +716,7 @@ renderMode(); $('park').value=start.id; buildPark(start);
 
 </script>
 <script>
-document.querySelector('.navctl .hint').textContent='Drag to rotate · right-drag to pan · scroll to zoom';
+document.querySelector('.navctl .hint').textContent='Drag to move · right-drag to rotate · scroll to zoom';
 
 /* ---------------- Day planner (decision tree) ---------------- */
 const QS={who:[['little','Kids under 5'],['kids','Kids 5–12'],['teens','Teens'],['adults','Just adults']],

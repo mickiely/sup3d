@@ -67,7 +67,7 @@ h1{margin:0;font-family:var(--serif);font-weight:400;font-size:27px;line-height:
 .tick{all:unset;cursor:pointer;width:22px;height:22px;border-radius:6px;border:1.5px solid var(--muted);display:grid;place-items:center;font-size:13px}
 .job.done .tick{background:var(--occ);border-color:var(--occ);color:#fff}
 .who{font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:999px;background:var(--line)}
-.jobsBtn{position:absolute;z-index:3;top:16px;right:max(16px,env(safe-area-inset-right,0px));display:none}
+.btn.jobsBtn{position:absolute;z-index:3;top:16px;right:max(16px,env(safe-area-inset-right,0px));display:none}
 
 .filters{position:absolute;z-index:3;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;max-width:calc(100% - 32px);overflow-x:auto}
 .chip{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;color:var(--muted)}
@@ -103,12 +103,12 @@ dt{color:var(--muted);padding-right:12px} dd{margin:0;text-align:right;font-weig
 .toast{position:absolute;z-index:6;top:16px;left:50%;transform:translateX(-50%);background:var(--fg);color:#fff;font-size:13px;font-weight:600;padding:9px 14px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.2);white-space:nowrap}
 .loading{position:absolute;inset:0;display:grid;place-items:center;font-size:13px;color:var(--muted);z-index:2;pointer-events:none}
 #tip{position:absolute;z-index:3;pointer-events:none;background:var(--fg);color:#fff;font-size:12px;padding:5px 9px;border-radius:7px;white-space:nowrap;transform:translate(-50%,-140%)}
-@media (max-width:1100px){ .jobs{display:none} .jobs.open{display:grid;top:auto;bottom:72px;max-height:55%} .jobsBtn{display:block} }
+@media (max-width:1100px){ .jobs{display:none} .jobs.open{display:grid;top:auto;bottom:72px;max-height:55%} .btn.jobsBtn{display:block} }
 @media (max-width:760px){
   .summary{width:auto;right:max(16px,env(safe-area-inset-right,0px));padding:12px;gap:8px;max-height:44%}
   .summary .kpis,.summary .foot,.summary .legend{display:none}
   h1{font-size:21px} .ringv{width:46px;height:46px}
-  .jobsBtn{top:auto;bottom:72px}
+  .btn.jobsBtn{top:auto;bottom:72px}
   .jobs.open{left:max(16px,env(safe-area-inset-left,0px));width:auto}
   .filters{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));transform:none;max-width:none}
   .card{left:max(16px,env(safe-area-inset-left,0px))!important;right:max(16px,env(safe-area-inset-right,0px));top:auto!important;bottom:72px;width:auto;max-height:50%}
@@ -128,7 +128,7 @@ body{margin:0}.app{height:100%;height:100dvh}
 @media(max-width:760px){
  .mapnav{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(72px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;border-radius:18px}
  .hudheading{flex-direction:column;gap:0}.hudheading .hudlabel{display:none}.hudgrid{grid-template-columns:repeat(3,44px)}.hudzoom{flex-direction:column}.hudzoom output{display:none}.hudrow{flex-direction:column}.hudtips{right:0;bottom:calc(100% + 10px);width:min(280px,100%)}
- .card{bottom:calc(240px + env(safe-area-inset-bottom));max-height:calc(100% - 260px)}.jobs.open{bottom:calc(240px + env(safe-area-inset-bottom));max-height:50%}.jobsBtn{bottom:calc(240px + env(safe-area-inset-bottom))}
+ .card{bottom:calc(240px + env(safe-area-inset-bottom));max-height:calc(100% - 260px)}.jobs.open{bottom:calc(284px + env(safe-area-inset-bottom));max-height:50%}.btn.jobsBtn{bottom:calc(240px + env(safe-area-inset-bottom))}
  .summary{max-height:calc(100% - 300px)}
 }
 @media(max-width:360px){.mapnav{gap:2px;padding:4px}.hudgrid{gap:2px}}
