@@ -95,7 +95,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 <header class="nav"><div class="wrap">
   <a class="logo" href="#top" aria-label="Sup3d home">sup<span>3</span>d</a>
   <nav aria-label="Sections"><a href="#how">How it works</a><a href="#views">Two views</a><a href="#features">Features</a><a href="#parks">Demo parks</a></nav>
-  <a class="btn primary" href="demo.html#eastsbeach">Open the live demo</a>
+  <a class="btn primary" href="/demo#eastsbeach">Open the live demo</a>
 </div></header>
 
 <main id="top">
@@ -103,7 +103,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   <div class="eyebrow">For holiday parks, caravan parks & resorts</div>
   <h1>Your whole park, <em>live in 3D.</em></h1>
   <p class="sub">Sup3d turns your site map into a 3D model of your park that your team runs the day from and your guests book from. Every cabin, site and holiday van is clickable and shows what's happening right now.</p>
-  <div class="ctas"><a class="btn primary" href="demo.html#eastsbeach">Explore Easts Beach in 3D</a><a class="btn ghost" href="guest.html">See the guest website</a></div>
+  <div class="ctas"><a class="btn primary" href="/demo#eastsbeach">Explore Easts Beach in 3D</a><a class="btn ghost" href="/guest">See the guest website</a></div>
   <figure class="shot">
     <img src="img/overview.jpg" alt="Easts Beach holiday park in Kiama rebuilt as a 3D model, with beachfront villas, holiday vans along the creek and pins over sites that need attention" width="1600" height="1000">
     <figcaption><span class="tagpill">Easts Beach, Kiama · 509 sites</span><span class="tagpill">Built from the park's own site map</span></figcaption>
@@ -140,13 +140,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <img src="img/staff.jpg" alt="Staff view: a holiday van's card showing the owner, annual site fees owing and compliance checks" loading="lazy">
       <div class="in"><div class="who">Staff · behind a login</div><h3>Run the day</h3>
         <ul><li>Arrivals, departures and what's free tonight</li><li>Jobs for cleaners, maintenance, grounds and reception</li><li>Annual van owners, fees owing and compliance</li><li>Seasonal rates and takings by site type</li></ul>
-        <a href="demo.html#eastsbeach">Open the staff view →</a></div>
+        <a href="/demo#eastsbeach">Open the staff view →</a></div>
     </article>
     <article class="view">
       <img src="img/guest.jpg" alt="Guest view: a free seashell retreat showing its nightly rate and a Choose this site button" loading="lazy">
       <div class="in"><div class="who">Guests · on your website</div><h3>Pick the exact spot</h3>
-        <ul><li>See what's free and where it sits in the park</li><li>Choose a site, then finish booking on your own system</li><li>Facilities, things to do and today's events</li><li>A day planner that re-plans when the kids melt down</li></ul>
-        <a href="guest.html">Open the guest website →</a></div>
+        <ul><li>See what's available and where it sits in the park</li><li>Choose a site, then finish booking on your own system</li><li>Facilities, things to do and today's events</li><li>A day planner that re-plans when the kids melt down</li></ul>
+        <a href="/guest">Open the guest website →</a></div>
     </article>
   </div>
 </div></section>
@@ -194,7 +194,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <div><b>Week 2</b><span>Booking system connected, staff logins set up, NFC tags on the amenities.</span></div>
     <div><b>Weeks 3–8</b><span>Live at one park. We measure cleaning sign-offs, jobs closed and direct bookings.</span></div>
   </div>
-  <div class="ctas" style="margin-top:24px"><a class="btn primary" href="demo.html#eastsbeach">Open the live demo</a><a class="btn ghost" href="guest.html">See the guest website</a></div>
+  <div class="ctas" style="margin-top:24px"><a class="btn primary" href="/demo#eastsbeach">Open the live demo</a><a class="btn ghost" href="/guest">See the guest website</a></div>
 </div></section>
 </main>
 
@@ -204,7 +204,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 const PARKS=[['eastsbeach','Easts Beach, Kiama','Tasman Holiday Parks',509],['batemans','Batemans Bay at Easts Riverside','Easts Holiday Parks',84],['moruya','Moruya Heads Dolphin Beach','Easts Holiday Parks',194],
  ['narooma','Narooma Easts','Easts Holiday Parks',219],['racecourse','Racecourse Beach','Tasman Holiday Parks',252],['tathra','Tathra Beach','Tasman Holiday Parks',121],
  ['wallaga','Wallaga Lake','Hampshire Holiday Parks',226],['nelligen','Nelligen','Hampshire Holiday Parks',148],['durras','South Durras','Independent',60]];
-document.getElementById('parkList').replaceChildren(...PARKS.map(([id,n,op,c])=>{ const a=document.createElement('a'); a.className='park'; a.href=`demo.html#${id}`;
+document.getElementById('parkList').replaceChildren(...PARKS.map(([id,n,op,c])=>{ const a=document.createElement('a'); a.className='park'; a.href=`/demo#${id}`;
   const b=document.createElement('b'); b.textContent=n; const s=document.createElement('span'); s.textContent=op; const e=document.createElement('em'); e.textContent=`${c} sites mapped →`; a.append(b,s,e); return a; }));
 </script>
 
